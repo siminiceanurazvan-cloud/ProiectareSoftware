@@ -1,26 +1,29 @@
 import java.util.Objects;
 
 public class Student {
-    private int numarMatricol;
+    private String numarMatricol; // Modificat în String
     private String nume;
     private String prenume;
     private String formatieDeStudiu;
 
-    public Student(int numarMatricol, String nume, String prenume, String formatieDeStudiu) {
+    public Student(String numarMatricol, String nume, String prenume, String formatieDeStudiu) {
         this.numarMatricol = numarMatricol;
         this.nume = nume;
         this.prenume = prenume;
         this.formatieDeStudiu = formatieDeStudiu;
     }
 
+    // Gettere necesare pentru sortare și afișare
     public String getNume() { return nume; }
     public String getPrenume() { return prenume; }
     public String getFormatieDeStudiu() { return formatieDeStudiu; }
+    public String getNumarMatricol() { return numarMatricol; }
 
     @Override
     public String toString() {
-        return "Studentul " + numarMatricol + ": " + nume + " " + prenume + " - " + formatieDeStudiu + ". ";
+        return numarMatricol + "," + prenume + "," + nume + "," + formatieDeStudiu;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,16 +1,53 @@
+import java.io.*;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Set<Student> setStudenti = new HashSet<>();
-        setStudenti.add(new Student(112, "Maria", "Popa", "TI21/1"));
-        setStudenti.add(new Student(115, "Ion", "Ionescu", "TI21/2"));
-        setStudenti.add(new Student(120, "Alis", "Georgescu", "TI21/2"));
+        List<Student> listaStudenti = new ArrayList<>();
 
-        Student cautat1 = new Student(120, "Alis", "Popa", "TI21/2");
-        System.out.println("Alis Popa prezenta? " + setStudenti.contains(cautat1));
+        File fisierIntrare = new File("studenti_in.txt");
 
-        Student cautat2 = new Student(112, "Maria", "Popa", "TI21/1");
-        System.out.println("Maria Popa prezenta? " + setStudenti.contains(cautat2));
+        try (Scanner scanner = new Scanner(fisierIntrare)) {
+            while (scanner.hasNextLine()) {
+                String linie = scanner.nextLine();
+                if (linie.trim().isEmpty()) continue;
+
+                String[] date = linie.split(",");
+
+                String nrMatricol = date[0].trim();
+                String prenume = date[1].trim();
+                String nume = date[2].trim();
+                String formatie = date[3].trim();
+
+                listaStudenti.add(new Student(nrMatricol, nume, prenume, formatie));
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Eroare: Nu s-a gasit fișierul 'studenti_in.txt'.");
+            return;
+        }
+
+        System.out.println("Studenți cititi");
+        for (Student s : listaStudenti) {
+            System.out.println(s);
+        }
+
+        listaStudenti.sort(Comparator.comparing(Student::getNume));
+        salveazaInFisier(listaStudenti, "studenti_out.txt");
+
+        listaStudenti.sort(Comparator
+                .comparing(Student::getFormatieDeStudiu)
+                .thenComparing(Student::getNume));
+
+        salveazaInFisier(listaStudenti, "studenti_out_sorted.txt");
+    }
+
+    public static void salveazaInFisier(List<Student> lista, String numeFisier) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(numeFisier))) {
+            for (Student s : lista) {
+                writer.println(s.toString());
+            }
+        } catch (IOException e) {
+            System.out.println("Eroare critică la scrierea fișierului: " + e.getMessage());
+        }
     }
 }
