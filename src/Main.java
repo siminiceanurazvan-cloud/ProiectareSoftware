@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         List<Student> listaStudenti = new ArrayList<>();
-
         File fisierIntrare = new File("studenti_in.txt");
 
         try (Scanner scanner = new Scanner(fisierIntrare)) {
@@ -13,7 +12,6 @@ public class Main {
                 if (linie.trim().isEmpty()) continue;
 
                 String[] date = linie.split(",");
-
                 String nrMatricol = date[0].trim();
                 String prenume = date[1].trim();
                 String nume = date[2].trim();
@@ -22,22 +20,45 @@ public class Main {
                 listaStudenti.add(new Student(nrMatricol, nume, prenume, formatie));
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Eroare: Nu s-a gasit fișierul 'studenti_in.txt'.");
+            System.out.println("Eroare: Nu s-a gasit fisierul 'studenti_in.txt'.");
             return;
         }
 
-        System.out.println("Studenți cititi");
+        Map<String, Student> mapStudenti = new HashMap<>();
         for (Student s : listaStudenti) {
+            mapStudenti.put(s.getNumarMatricol(), s);
+        }
+
+        File fisierNote = new File("note_anon.txt");
+        try (Scanner scannerNote = new Scanner(fisierNote)) {
+            while (scannerNote.hasNextLine()) {
+                String linie = scannerNote.nextLine();
+                if (linie.trim().isEmpty()) continue;
+
+                String[] date = linie.split(",");
+                String nrMatricol = date[0].trim();
+                double nota = Double.parseDouble(date[1].trim());
+
+                Student student = mapStudenti.get(nrMatricol);
+                if (student != null) {
+                    student.setNota(nota);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Eroare: Nu s-a gasit fișierul 'note_anon.txt'.");
+        }
+
+        System.out.println("Studenti dupa adaugarea notelor:");
+        for (Student s : mapStudenti.values()) {
             System.out.println(s);
         }
+
+        System.out.println("\nOperațiile de sortare originale");
 
         listaStudenti.sort(Comparator.comparing(Student::getNume));
         salveazaInFisier(listaStudenti, "studenti_out.txt");
 
-        listaStudenti.sort(Comparator
-                .comparing(Student::getFormatieDeStudiu)
-                .thenComparing(Student::getNume));
-
+        listaStudenti.sort(Comparator.comparing(Student::getFormatieDeStudiu).thenComparing(Student::getNume));
         salveazaInFisier(listaStudenti, "studenti_out_sorted.txt");
     }
 
