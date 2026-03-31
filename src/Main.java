@@ -20,13 +20,13 @@ public class Main {
                 listaStudenti.add(new Student(nrMatricol, nume, prenume, formatie));
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Eroare: Nu s-a gasit fisierul 'studenti_in.txt'.");
+            System.out.println("Eroare: Nu s-a gasit fișierul 'studenti_in.txt'.");
             return;
         }
 
-        Map<String, Student> mapStudenti = new HashMap<>();
+        Map<String, Student> tineri = new HashMap<>();
         for (Student s : listaStudenti) {
-            mapStudenti.put(s.getNumarMatricol(), s);
+            tineri.put(s.getNumarMatricol(), s);
         }
 
         File fisierNote = new File("note_anon.txt");
@@ -39,7 +39,7 @@ public class Main {
                 String nrMatricol = date[0].trim();
                 double nota = Double.parseDouble(date[1].trim());
 
-                Student student = mapStudenti.get(nrMatricol);
+                Student student = tineri.get(nrMatricol);
                 if (student != null) {
                     student.setNota(nota);
                 }
@@ -48,12 +48,12 @@ public class Main {
             System.out.println("Eroare: Nu s-a gasit fișierul 'note_anon.txt'.");
         }
 
-        System.out.println("Studenti dupa adaugarea notelor:");
-        for (Student s : mapStudenti.values()) {
-            System.out.println(s);
-        }
+        System.out.println("Cautare note studenti");
+        float notaM = gasesteNota("Bianca", "Popescu", tineri);
+        float notaN = gasesteNota("Ioan", "Popa", tineri);
 
-        System.out.println("\nOperațiile de sortare originale");
+        System.out.println("Nota pentru Bianca Popescu: " + notaM);
+        System.out.println("Nota pentru Ioan Popa: " + notaN);
 
         listaStudenti.sort(Comparator.comparing(Student::getNume));
         salveazaInFisier(listaStudenti, "studenti_out.txt");
@@ -62,13 +62,30 @@ public class Main {
         salveazaInFisier(listaStudenti, "studenti_out_sorted.txt");
     }
 
+    public static float gasesteNota(String prenume, String nume, Map<String, Student> tineri) {
+        Map<String, Student> mapNumePrenume = new HashMap<>();
+
+        for (Student s : tineri.values()) {
+            String cheie = s.getPrenume() + "-" + s.getNume();
+            mapNumePrenume.put(cheie, s);
+        }
+
+        String cheieCautare = prenume + "-" + nume;
+        Student studentGasit = mapNumePrenume.get(cheieCautare);
+
+        if (studentGasit != null) {
+            return (float) studentGasit.getNota();
+        }
+        return 0.0f;
+    }
+
     public static void salveazaInFisier(List<Student> lista, String numeFisier) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(numeFisier))) {
             for (Student s : lista) {
                 writer.println(s.toString());
             }
         } catch (IOException e) {
-            System.out.println("Eroare critică la scrierea fișierului: " + e.getMessage());
+            System.out.println("Eroare critica la scrierea fisierului: " + e.getMessage());
         }
     }
 }
