@@ -20,7 +20,7 @@ public class Main {
                 listaStudenti.add(new Student(nrMatricol, nume, prenume, formatie));
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Eroare: Nu s-a gasit fișierul 'studenti_in.txt'.");
+            System.out.println("Eroare: Nu s-a gasit fisierul 'studenti_in.txt'.");
             return;
         }
 
@@ -45,10 +45,9 @@ public class Main {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Eroare: Nu s-a gasit fișierul 'note_anon.txt'.");
+            System.out.println("Eroare: Nu s-a gasit fisierul 'note_anon.txt'.");
         }
 
-        System.out.println("Cautare note studenti");
         float notaM = gasesteNota("Bianca", "Popescu", tineri);
         float notaN = gasesteNota("Ioan", "Popa", tineri);
 
@@ -60,6 +59,14 @@ public class Main {
 
         listaStudenti.sort(Comparator.comparing(Student::getFormatieDeStudiu).thenComparing(Student::getNume));
         salveazaInFisier(listaStudenti, "studenti_out_sorted.txt");
+
+        List<Student> bursieri = new ArrayList<>();
+        bursieri.add(new StudentBursier("1025", "Andrei", "Popa", "ISM141/2", 8.70, 725.50));
+        bursieri.add(new StudentBursier("1024", "Ioan", "Mihalcea", "ISM141/1", 9.80, 801.10));
+        bursieri.add(new StudentBursier("1026", "Anamaria", "Prodan", "TI131/1", 8.90, 745.50));
+        bursieri.add(new StudentBursier("1029", "Bianca", "Popescu", "TI131/1", 9.10, 780.80));
+
+        salveazaInFisier(bursieri, "bursieri_out.txt");
     }
 
     public static float gasesteNota(String prenume, String nume, Map<String, Student> tineri) {
@@ -76,6 +83,7 @@ public class Main {
         if (studentGasit != null) {
             return (float) studentGasit.getNota();
         }
+
         return 0.0f;
     }
 

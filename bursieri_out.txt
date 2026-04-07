@@ -1,0 +1,4 @@
+1025,Popa,Andrei,ISM141/2,8.7,725.5
+1024,Mihalcea,Ioan,ISM141/1,9.8,801.1
+1026,Prodan,Anamaria,TI131/1,8.9,745.5
+1029,Popescu,Bianca,TI131/1,9.1,780.8
