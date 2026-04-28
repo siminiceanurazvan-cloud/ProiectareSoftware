@@ -41,12 +41,29 @@ public class Main {
 
                 Student student = tineri.get(nrMatricol);
                 if (student != null) {
-                    student.setNota(nota);
+                    Student studentActualizat = student.withNota(nota);
+                    tineri.put(nrMatricol, studentActualizat);
+
+                    for (int i = 0; i < listaStudenti.size(); i++) {
+                        if (listaStudenti.get(i).getNumarMatricol().equals(nrMatricol)) {
+                            listaStudenti.set(i, studentActualizat);
+                            break;
+                        }
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Eroare: Nu s-a gasit fisierul 'note_anon.txt'.");
         }
+
+        Set<Student> setStudenti = new HashSet<>(listaStudenti);
+        setStudenti = imparteInDouaFormatii(setStudenti, "TI 211_1", "TI 211_2");
+
+        System.out.println("--- Lista noua dupa impartirea in formatii ---");
+        for (Student s : setStudenti) {
+            System.out.println(s);
+        }
+        System.out.println("----------------------------------------------\n");
 
         float notaM = gasesteNota("Bianca", "Popescu", tineri);
         float notaN = gasesteNota("Ioan", "Popa", tineri);
@@ -69,6 +86,25 @@ public class Main {
         salveazaInFisier(bursieri, "bursieri_out.txt");
     }
 
+    static Student schimbaFormatia(Student st, String nouaFormatieDeStudiu) {
+        return new Student(st.getNumarMatricol(), st.getNume(), st.getPrenume(), nouaFormatieDeStudiu, st.getNota());
+    }
+
+    static Set<Student> imparteInDouaFormatii(Set<Student> studenti, String formatia1, String formatia2) {
+        Set<Student> rezultat = new HashSet<>();
+        List<Student> listaTemporara = new ArrayList<>(studenti);
+
+        int n = listaTemporara.size();
+        int jumatate = (n % 2 == 0) ? (n / 2) : (n / 2 + 1);
+
+        for (int i = 0; i < n; i++) {
+            String formatiaAtribuita = (i < jumatate) ? formatia1 : formatia2;
+            rezultat.add(schimbaFormatia(listaTemporara.get(i), formatiaAtribuita));
+        }
+
+        return rezultat;
+    }
+
     public static float gasesteNota(String prenume, String nume, Map<String, Student> tineri) {
         Map<String, Student> mapNumePrenume = new HashMap<>();
 
@@ -87,7 +123,7 @@ public class Main {
         return 0.0f;
     }
 
-    public static void salveazaInFisier(List<Student> lista, String numeFisier) {
+    public static void salveazaInFisier(List<? extends Student> lista, String numeFisier) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(numeFisier))) {
             for (Student s : lista) {
                 writer.println(s.toString());

@@ -1,11 +1,10 @@
 import java.util.Objects;
 
 public class StudentBursier extends Student {
-    private double cuantumBursa;
+    private final double cuantumBursa;
 
     public StudentBursier(String numarMatricol, String nume, String prenume, String formatieDeStudiu, double nota, double cuantumBursa) {
-        super(numarMatricol, nume, prenume, formatieDeStudiu);
-        this.setNota(nota);
+        super(numarMatricol, nume, prenume, formatieDeStudiu, nota);
         this.cuantumBursa = cuantumBursa;
     }
 
@@ -13,8 +12,8 @@ public class StudentBursier extends Student {
         return cuantumBursa;
     }
 
-    public void setCuantumBursa(double cuantumBursa) {
-        this.cuantumBursa = cuantumBursa;
+    public StudentBursier withCuantumBursa(double nouCuantum) {
+        return new StudentBursier(getNumarMatricol(), getNume(), getPrenume(), getFormatieDeStudiu(), getNota(), nouCuantum);
     }
 
     @Override
