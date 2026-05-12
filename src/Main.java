@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -201,6 +203,43 @@ public class Main {
             System.out.println("Eroare la citirea din fisierul Excel: " + e.getMessage());
         }
 
+        List<Student> studentiCuNote = Arrays.asList(
+                new Student("1025", "Andrei", "Popa", "ISM141/2", 8.70),
+                new Student("1024", "Ioan", "Mihalcea", "ISM141/1", 10.0),
+                new Student("1026", "Anamaria", "Prodan", "TI131/1", 8.90),
+                new Student("1029", "Bianca", "Popescu", "TI131/1", 10.0),
+                new Student("1030", "Maria", "Pana", "TI131/2", 4.10),
+                new Student("1031", "Gabriela", "Mohanu", "TI131/2", 7.33),
+                new Student("1032", "Marius", "Nasta", "TI131/2", 3.20),
+                new Student("1033", "Marius", "Nasta", "TI131/1", 5.12),
+                new Student("1034", "Andrei", "Dobrescu", "TI131/2", 2.22)
+        );
+        System.out.println("\nStudenti cu nota 10");
+        studentiCuNote.stream()
+                .filter(s -> s.getNota() == 10.0)
+                .forEach(System.out::println);
+
+        System.out.println("\nStudenti cu nota sub 5");
+        studentiCuNote.stream()
+                .filter(s -> s.getNota() < 5.0)
+                .forEach(System.out::println);
+
+        System.out.println("\nLista transformata (notele < 4 devin 4)");
+        List<Student> studentiTransformati = studentiCuNote.stream()
+                .map(s -> s.getNota() < 4.0 ? s.withNota(4.0) : s)
+                .collect(Collectors.toList());
+        studentiTransformati.forEach(System.out::println);
+
+        System.out.println("\nSuma notelor tuturor studentilor");
+        double sumaNotelor = studentiCuNote.stream()
+                .map(Student::getNota)
+                .reduce(0.0, Double::sum);
+        System.out.println("Suma notelor este: " + sumaNotelor);
+
+        System.out.println("\nMedia notelor");
+        double mediaNotelor = sumaNotelor / studentiCuNote.size();
+
+        System.out.printf("Media notelor este: %.2f\n", mediaNotelor);
         return studentsList;
     }
 }
