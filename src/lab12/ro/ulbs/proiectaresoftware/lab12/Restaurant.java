@@ -1,0 +1,35 @@
+package lab12.ro.ulbs.proiectaresoftware.lab12;
+
+public class Restaurant {
+
+    private static final Restaurant restaurant;
+    private  long usedWater;
+
+    static {
+        restaurant = new Restaurant();
+    }
+
+    private Restaurant() {
+        this.usedWater = 0;
+    }
+
+    public static Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public synchronized void washHands() {
+        for(int i = 0; i < 1000; i++) {
+            this.usedWater++;
+        }
+    }
+
+    public synchronized void washDishes() {
+        for(int i = 0; i < 1000; i++) {
+            this.usedWater++;
+        }
+    }
+
+    public long getUsedWater() {
+        return usedWater;
+    }
+}
