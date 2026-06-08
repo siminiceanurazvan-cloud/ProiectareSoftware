@@ -1,7 +1,6 @@
 package lab8;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,25 +13,25 @@ import java.io.IOException;
 public class CopiereExcelCuMedie {
     public static void main(String[] args) {
         String inputFilePath = "laborator8_students.xlsx";
-        String outputFilePath = "laborator8_output2.xlsx";
+        String outputFilePath3 = "laborator8_output3.xlsx";
 
         try (FileInputStream fis = new FileInputStream(new File(inputFilePath));
              XSSFWorkbook inputWorkbook = new XSSFWorkbook(fis);
-             XSSFWorkbook outputWorkbook = new XSSFWorkbook()) {
+             XSSFWorkbook outputWorkbook3 = new XSSFWorkbook()) {
 
             XSSFSheet inputSheet = inputWorkbook.getSheetAt(0);
-            XSSFSheet outputSheet = outputWorkbook.createSheet("Rezultate");
+            XSSFSheet outputSheet3 = outputWorkbook3.createSheet("Rezultate Formula");
 
             for (int i = 0; i <= inputSheet.getLastRowNum(); i++) {
                 Row inputRow = inputSheet.getRow(i);
                 if (inputRow == null) continue;
 
-                Row outputRow = outputSheet.createRow(i);
+                Row outputRow3 = outputSheet3.createRow(i);
                 int lastCellNum = inputRow.getLastCellNum();
 
                 for (int j = 0; j < lastCellNum; j++) {
                     Cell inputCell = inputRow.getCell(j);
-                    Cell outputCell = outputRow.createCell(j);
+                    Cell outputCell = outputRow3.createCell(j);
 
                     if (inputCell != null) {
                         switch (inputCell.getCellType()) {
@@ -51,36 +50,20 @@ public class CopiereExcelCuMedie {
                     }
                 }
 
-                Cell medieCell = outputRow.createCell(lastCellNum);
+                Cell medieCell3 = outputRow3.createCell(lastCellNum);
 
                 if (i == 0) {
-                    medieCell.setCellValue("Medie");
+                    medieCell3.setCellValue("Medie");
                 } else {
-                    double suma = 0;
-                    int coloaneNumarate = 0;
-
-                    for (int k = lastCellNum - 3; k < lastCellNum; k++) {
-                        if (k >= 0) {
-                            Cell c = inputRow.getCell(k);
-                            if (c != null && c.getCellType() == CellType.NUMERIC) {
-                                suma += c.getNumericCellValue();
-                                coloaneNumarate++;
-                            }
-                        }
-                    }
-
-                    if (coloaneNumarate > 0) {
-                        double medie = suma / coloaneNumarate;
-                        medieCell.setCellValue(medie);
-                    } else {
-                        medieCell.setCellValue(0.0);
-                    }
+                    int excelRowNum = i + 1;
+                    String formula = "AVERAGE(D" + excelRowNum + ":F" + excelRowNum + ")";
+                    medieCell3.setCellFormula(formula);
                 }
             }
 
-            try (FileOutputStream fos = new FileOutputStream(new File(outputFilePath))) {
-                outputWorkbook.write(fos);
-                System.out.println("Fișierul '" + outputFilePath + "' a fost generat!");
+            try (FileOutputStream fos3 = new FileOutputStream(new File(outputFilePath3))) {
+                outputWorkbook3.write(fos3);
+                System.out.println("Fisierul '" + outputFilePath3 + "' a fost generat cu succes folosind formule!");
             }
 
         } catch (IOException e) {
