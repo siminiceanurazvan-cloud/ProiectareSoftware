@@ -90,7 +90,14 @@ public class Main {
         salveazaInFisier(bursieri, "bursieri_out.txt");
 
         String xlsFileName = "laborator8_students.xlsx";
-        writeToXls(setStudenti, xlsFileName);
+        //writeToXls(setStudenti, xlsFileName);
+
+        StudentExporter simpluExporter = new ExcelExporter();
+
+        StudentExporter exporterCuCronometru = new TimeMeasuringExporter(simpluExporter);
+
+        exporterCuCronometru.export(setStudenti, xlsFileName);
+
         System.out.println("Studentii au fost salvati in " + xlsFileName);
 
         List<Student> studentsFromXls = readFromXls(xlsFileName);
@@ -217,7 +224,7 @@ public class Main {
         System.out.println("\nStudenti cu nota 10");
         studentiCuNote.stream()
                 .filter(s -> s.getNota() == 10.0)
-                .forEach(System.out::println);
+                .forEach(s -> System.out.println(s));
 
         System.out.println("\nStudenti cu nota sub 5");
         studentiCuNote.stream()
@@ -238,6 +245,7 @@ public class Main {
 
         System.out.println("\nMedia notelor");
         double mediaNotelor = sumaNotelor / studentiCuNote.size();
+
 
         System.out.printf("Media notelor este: %.2f\n", mediaNotelor);
         return studentsList;
